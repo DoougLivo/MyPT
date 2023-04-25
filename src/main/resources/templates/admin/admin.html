@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>관리자 포털</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+<style>
+table {
+	width: 70%;
+    border: 1px solid #444444;
+    border-collapse: collapse;
+}
+th, td {
+    border: 1px solid #444444;
+}
+th {
+	background-color: silver;
+}
+a {
+	color: black; text-decoration: none;
+}
+
+#container {
+	width: 900px;
+	margin: auto;
+}
+#searchDiv {
+	float: left;
+	width: 900px;
+	height: 100px;
+}
+#listDiv {
+	float: left;
+	width: 50%;
+	height: 400px;
+}
+#viewDiv {
+	float: right;
+	width: 50%;
+	height: 500px;
+}
+ul {
+	text-align: center;
+	margin-top: 20px;
+	padding-left: 1px;
+}
+ul li {
+	list-style-type: none;
+	display: inline-block;
+	margin-right: 10px;
+}
+</style>
+</head>
+<body>
+<div id="container">
+<a href="/"><img src="/images/homelogo.png" style="width: 30px; height: 30px; margin-top: 15px;"></a>
+<br><br>
+	<!-- 검색 -->
+	<form name="searchform" id="searchform" action="/admin" method="get">
+	<div id="searchDiv">
+		<table style="width: 100%; text-align: center;">
+			<tr>
+				<td style="background-color:#F0EEED;">이름</td>
+				<td><input type="hidden" id="searchuser_id" name="userId" value=""></td>
+				<td><input type="text" id="searchKeyword" name="searchKeyword" style="width:98%;" placeholder="사원명을 입력하세요."></td>
+				<td><input type="submit" id="goSearch" value="검색" style="width: 100%;"></td>
+			</tr>
+		</table>
+	</div>
+	</form>
+	
+	<!-- 목록 -->
+	<div id="listDiv">
+		<table style="width: 95%; height: 10%;">
+			<thead>
+				<tr>
+					<th>ID</th>
+					<th>사원명</th> 
+					<th>부서</th> 
+					<th>상태</th> 
+				</tr>
+			</thead>
+			<tbody id="tbodyList">
+				<tr th:each="l : ${list}">
+					<td><a th:text="${l.userId}" th:href="@{/admin/{userId}(userId = ${l.userId})}">Id</a></td>
+					<td th:text="${l.userNm}">사원명</td>
+					<td th:text="${l.depDto.dep_nm}">부서</td>
+					<td th:if="${l.signYn}=='N'">승인요청</td>
+					<td th:if="${l.signYn}=='Y'">승인</td>
+				</tr>
+				<tr th:each="sl : ${searchList}">
+					<td id="listId"><a th:text="${sl.userId}" th:href="@{/admin(searchKeyword=${searchKeyword},userId=${sl.userId})}">Id</a></td>
+					<td th:text="${sl.userNm}">사원명</td>
+					<td th:text="${sl.depDto.dep_nm}">부서</td>
+					<td th:if="${sl.signYn}=='N'">승인요청</td>
+					<td th:if="${sl.signYn}=='Y'">승인</td>
+				</tr>
+			</tbody>
+		</table>
+		
+<!--       	<div class="pagination"> -->
+<!--       		<ul> -->
+<!--       			<li th:each="page : ${#numbers.sequence(0, totalPage - 1)}"> -->
+<!-- 					<th:block th:if="${userId}==null"> -->
+<!-- 					<a th:href="@{/admin(page=${pageStat.index})}" th:text="${pageStat.index + 1}"></a>      			 -->
+<!-- 					</th:block> -->
+<!-- 					<th:block th:if="${userId}!=null"> -->
+<!-- 					<a th:href="@{/admin/userId(page=${pageStat.index})}" th:text="${pageStat.index + 1}"></a>      			 -->
+<!-- 					</th:block> -->
+<!--       			</li> -->
+<!--       		</ul> -->
+<!--       	</div> -->
+	</div>
+
+	<!-- 상세정보 -->
+	<form name="adminform" id="adminform">
+	<div id="viewDiv">
+		<table style="width: 100%; height: 40%; float: right;">
+			<th:block th:if="${view}!=null">
+			<tbody>
+				<tr>
+					<td style="background-color:#F0EEED;"><label for="userId" >ID</label></td>
+					<td><input type="text" id="userId" name="userId" style="width:95%" th:value="${view.userId}" readonly></td>
+				</tr>
+				<tr>
+					<td style="background-color:#F0EEED;"><label for="userNm">사원명</label></td>
+					<td><input type="text" id="userNm" name="userNm" style="width:95%" th:value="${view.userNm}"></td>
+				</tr>
+				<tr>
+					<td style="background-color:#F0EEED;"><label for="user_email">이메일</label></td>
+					<td><input type="email" id="user_email" name="user_email" style="width:95%" th:value="${view.user_email}"></td>
+				</tr>
+				<tr>
+					<td style="background-color:#F0EEED;"><label for="dep_id">부서</label></td>
+					<td>
+						<select id="dep_id" name="depDto.dep_id">
+							<option th:each="dl : ${depList}" th:value="${dl.dep_id}" th:text="${dl.dep_nm}" th:selected="${dl.dep_id}==${view.depDto.dep_id}">
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td style="background-color:#F0EEED;"><label for="user_phone">전화번호</label></td>
+					<td><input type="tel" id="user_phone" name="user_phone" style="width:95%" th:value="${view.user_phone}"></td>
+				</tr>
+				<tr>
+					<td style="background-color:#F0EEED;"><label for="user_addr">주소</label></td>
+					<td><input type="text" id="user_addr" name="user_addr" style="width:95%" th:value="${view.user_addr}"></td>
+				</tr>
+				<tr>
+					<td style="background-color:#F0EEED;"><label for="h_code_id">취미</label></td>
+					<td>
+					<th:block th:each="hl : ${getHobbyList}">
+			     	 	<label><input type="checkbox" name="h_code_id" th:value="${hl.h_code_id}" th:text="${hl.hNm}" th:checked="${#strings.contains(hci, hl.h_code_id)}"></label>
+	     	 		</th:block>
+	     	 		</td>
+				</tr>
+				<tr>
+					<td style="background-color:#F0EEED;"><label for="signYn">상태</label></td>
+					<td>
+					<select id="signYn" name="signYn">
+						<option th:selected="${view.signYn}=='N'" th:value="N">승인요청</option>
+						<option th:selected="${view.signYn}=='Y'" th:value="Y">승인</option>
+					</select>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2" style="text-align: right;">
+					<input type="button" id="btnSave" value="저장">
+					<input type="button" id="btnDelete" value="삭제">
+					</td>
+				</tr>
+			</tbody>
+			</th:block>
+		</table>
+	</div>
+	</form>
+
+</div>
+</body>
+</html>
+<script>
+$(()=>{
+	// 저장
+	$("#btnSave").click(()=>{
+		let frm = $("#adminform").serialize();
+		let userId = $("#userId").val();
+		let signYn = $("#signYn").val();
+		let h_code_id = $("#h_code_id").val();
+		
+		$.ajax({
+			url:"/admin/update",
+			data:frm,
+			dataType:"json",
+			method:"post"
+		})
+		.done((res)=>{
+			console.log(res);
+			if(res.msg=='success') {
+				alert(res.msg2);
+				location.href="/admin/"+userId;
+			} else{
+				alert("실패");
+			}
+		})
+		.fail((res, status, error)=>{
+			console.log(status);
+			console.log(error);
+		});
+	});
+	
+	// 삭제
+	$("#btnDelete").click(()=>{
+		let frm = $("#adminform").serialize();
+		console.log(frm);
+		$.ajax({
+			url:"/admin/delete",
+			data:frm,
+			dataType:"json",
+			method:"post"
+		})
+		.done((res)=>{
+			console.log(res);
+			if(res.msg=='success') {
+				alert(res.msg2);
+				location.href="/admin";
+			} else{
+				alert("실패");
+			}
+		})
+		.fail((res, status, error)=>{
+			console.log(status);
+			console.log(error);
+		});
+	});
+	
+});
+</script>
+
+
