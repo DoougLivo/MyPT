@@ -1,5 +1,6 @@
 package com.assignment.choi.controller;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Map;
 
@@ -11,16 +12,23 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.support.RequestContextUtils;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import com.assignment.choi.domain.DepDto;
 import com.assignment.choi.domain.UserDto;
 import com.assignment.choi.domain.UserHDto;
+import com.assignment.choi.service.PTService;
 
 @Controller
 public class UserController {
-	@Autowired
+	//@Autowired
 	//UserService userService;
+	
+	//@Autowired
+	PTService ptService;
+	
 	
 	@GetMapping("/")
 	String goMainPg() {
@@ -40,6 +48,31 @@ public class UserController {
 //		model.addAttribute("getHobbyList", getHobbyList);
 //		System.out.println("취미목록 : "+ getHobbyList.size());
 //		return "redirect:/user_PT";
+		
+		URI uri = UriComponentsBuilder
+                .fromUriString("http://localhost:8082") //http://localhost에 호출
+                .path("/user_PT")
+//                .queryParam("name", "steve")  // query parameter가 필요한 경우 이와 같이 사용
+//                .queryParam("age", 10)
+                .encode()
+                .build()
+                .toUri();
+		
+		RestTemplate restTemplete = new RestTemplate();
+
+        List<DepDto> resultList = (List<DepDto>) restTemplete.getForObject(uri, DepDto.class);
+        // entity로 데이터를 가져오겠다(Get)~~
+//        System.out.println(resultList.getStatusCode());
+//        System.out.println(resultList.getBody());
+//
+//        return resultList.getBody();
+		
+		
+		
+		System.out.println(uri.toString());
+		
+		
+		
 		return "redirect:http://localhost:8082/user_PT";
 	}
 	
