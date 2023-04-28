@@ -101,7 +101,7 @@ th {
 				<td style="background-color:#F0EEED;"><label for="h_code_id">취미</label></td>
 				<td>
 				<th:block th:each="hl : ${getHobbyList}">
-			     	 	<label><input type="checkbox" name="h_code_id" th:value="${hl.h_code_id}" th:text="${hl.hNm}"></label>
+			     	 	<label><input type="checkbox" name="h_code_id" th:value="${hl.h_code_id}" th:text="${hl.hnm}"></label>
 	     	 	</th:block>
      	 		</td>
 			</tr>

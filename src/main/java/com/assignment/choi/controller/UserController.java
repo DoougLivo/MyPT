@@ -1,12 +1,16 @@
 package com.assignment.choi.controller;
 
 import java.net.URI;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,15 +24,20 @@ import com.assignment.choi.domain.DepDto;
 import com.assignment.choi.domain.UserDto;
 import com.assignment.choi.domain.UserHDto;
 import com.assignment.choi.service.PTService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 
 @Controller
 public class UserController {
 	//@Autowired
 	//UserService userService;
 	
-	//@Autowired
-	PTService ptService;
+	@Autowired
+	private final PTService ptService;
 	
+	public UserController(PTService ptService) {
+		this.ptService = ptService;
+	}
 	
 	@GetMapping("/")
 	String goMainPg() {
@@ -38,29 +47,28 @@ public class UserController {
 	// 사용자 포털
 	@GetMapping("/user")
 	String goUser(Model model) {
-		System.out.println("sssssssssssssssssss");
-//		// 부서 목록
-//		List<DepDto> depList = userService.getDepList();
-//		model.addAttribute("depList", depList);
-//		System.out.println("dep갯수: "+depList.size());
-//		// 취미 목록
-//		List<HobbyDto> getHobbyList = userService.getHobbyList();
-//		model.addAttribute("getHobbyList", getHobbyList);
-//		System.out.println("취미목록 : "+ getHobbyList.size());
-//		return "redirect:/user_PT";
+		System.out.println("??????????????????????"+ptService.goUser().get("getHobbyList"));
+		model.addAttribute("getHobbyList", ptService.goUser().get("getHobbyList"));
+		model.addAttribute("depList", ptService.goUser().get("depList"));
 		
-		URI uri = UriComponentsBuilder
-                .fromUriString("http://localhost:8082") //http://localhost에 호출
-                .path("/user_PT")
-//                .queryParam("name", "steve")  // query parameter가 필요한 경우 이와 같이 사용
-//                .queryParam("age", 10)
-                .encode()
-                .build()
-                .toUri();
-		
-		RestTemplate restTemplete = new RestTemplate();
-
-        List<DepDto> resultList = (List<DepDto>) restTemplete.getForObject(uri, DepDto.class);
+//		HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory();
+//		factory.setConnectTimeout(5000); // 타임아웃 설정 5초
+//		factory.setReadTimeout(5000); // 타임아웃 설정 5초
+//		
+//		RestTemplate restTemplete = new RestTemplate();
+//		
+//		URI url = UriComponentsBuilder
+//                .fromUriString("http://localhost:8082") //http://localhost에 호출
+//                .path("/user_PT")
+////                .queryParam("name", "steve")  // query parameter가 필요한 경우 이와 같이 사용
+////                .queryParam("age", 10)
+//                .encode()
+//                .build()
+//                .toUri();
+//		
+//		
+//
+//       ResponseEntity<String> response = restTemplete.exchange(url.toString(), HttpMethod.GET, entity, String.class);
         // entity로 데이터를 가져오겠다(Get)~~
 //        System.out.println(resultList.getStatusCode());
 //        System.out.println(resultList.getBody());
@@ -69,11 +77,10 @@ public class UserController {
 		
 		
 		
-		System.out.println(uri.toString());
+//		System.out.println(uri.toString());
 		
-		
-		
-		return "redirect:http://localhost:8082/user_PT";
+//		return "redirect:http://localhost:8082/user_PT";
+		return "user/user";
 	}
 	
 	
