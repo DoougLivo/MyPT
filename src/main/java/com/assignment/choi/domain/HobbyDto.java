@@ -23,6 +23,6 @@ public class HobbyDto {
 	private String h_code_id; // A
 	
 	@Column(name="h_nm", length=40)
-	private String hNm;   // 등산
+	private String hnm;   // 등산
 	
 }

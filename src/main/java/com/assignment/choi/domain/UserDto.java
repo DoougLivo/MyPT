@@ -31,7 +31,7 @@ public class UserDto {
 	@Column(name="user_email", length=40, nullable=false, unique = true)
 	private String user_email;
 
-	@ManyToOne(targetEntity = DepDto.class, fetch = FetchType.LAZY)
+	@ManyToOne(targetEntity = DepDto.class)
 	@JoinColumn(name="dep_id")
 	private DepDto depDto;
 	
@@ -44,10 +44,10 @@ public class UserDto {
 	@Column(name="sign_yn", length=1)
 	private String signYn;
 
-	@Override
-	public String toString() {
-		return "UserDto [userId=" + userId + ", userNm=" + userNm + ", user_email=" + user_email + ", depDto=" + depDto
-				+ ", user_phone=" + user_phone + ", user_addr=" + user_addr + ", signYn=" + signYn + "]";
-	}
+//	@Override
+//	public String toString() {
+//		return "UserDto [userId=" + userId + ", userNm=" + userNm + ", user_email=" + user_email + ", depDto=" + depDto
+//				+ ", user_phone=" + user_phone + ", user_addr=" + user_addr + ", signYn=" + signYn + "]";
+//	}
 	
 }

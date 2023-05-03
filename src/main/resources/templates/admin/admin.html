@@ -83,19 +83,20 @@ ul li {
 			</thead>
 			<tbody id="tbodyList">
 				<tr th:each="l : ${list}">
-					<td><a th:text="${l.userId}" th:href="@{/admin/{userId}(userId = ${l.userId})}">Id</a></td>
+					<td th:if="${searchKeyword == null}"><a th:text="${l.userId}" th:href="@{/admin/{userId}(userId = ${l.userId})}">Id</a></td>
+					<td th:if="${searchKeyword != null}"><a th:text="${l.userId}" th:href="@{/admin(searchKeyword=${searchKeyword},userId=${l.userId})}">Id</a></td>
 					<td th:text="${l.userNm}">사원명</td>
 					<td th:text="${l.depDto.dep_nm}">부서</td>
 					<td th:if="${l.signYn}=='N'">승인요청</td>
 					<td th:if="${l.signYn}=='Y'">승인</td>
 				</tr>
-				<tr th:each="sl : ${searchList}">
-					<td id="listId"><a th:text="${sl.userId}" th:href="@{/admin(searchKeyword=${searchKeyword},userId=${sl.userId})}">Id</a></td>
-					<td th:text="${sl.userNm}">사원명</td>
-					<td th:text="${sl.depDto.dep_nm}">부서</td>
-					<td th:if="${sl.signYn}=='N'">승인요청</td>
-					<td th:if="${sl.signYn}=='Y'">승인</td>
-				</tr>
+<!-- 				<tr th:each="sl : ${searchList}"> -->
+<!-- 					<td id="listId"><a th:text="${sl.userId}" th:href="@{/admin(searchKeyword=${searchKeyword},userId=${sl.userId})}">Id</a></td> -->
+<!-- 					<td th:text="${sl.userNm}">사원명</td> -->
+<!-- 					<td th:text="${sl.depDto.dep_nm}">부서</td> -->
+<!-- 					<td th:if="${sl.signYn}=='N'">승인요청</td> -->
+<!-- 					<td th:if="${sl.signYn}=='Y'">승인</td> -->
+<!-- 				</tr> -->
 			</tbody>
 		</table>
 		
@@ -151,7 +152,7 @@ ul li {
 					<td style="background-color:#F0EEED;"><label for="h_code_id">취미</label></td>
 					<td>
 					<th:block th:each="hl : ${getHobbyList}">
-			     	 	<label><input type="checkbox" name="h_code_id" th:value="${hl.h_code_id}" th:text="${hl.hNm}" th:checked="${#strings.contains(hci, hl.h_code_id)}"></label>
+			     	 	<label><input type="checkbox" name="h_code_id" th:value="${hl.h_code_id}" th:text="${hl.hnm}" th:checked="${#strings.contains(hci, hl.h_code_id)}"></label>
 	     	 		</th:block>
 	     	 		</td>
 				</tr>
@@ -200,7 +201,8 @@ $(()=>{
 				alert(res.msg2);
 				location.href="/admin/"+userId;
 			} else{
-				alert("실패");
+				alert("저장되었어요.");
+				location.href="/admin/"+userId;
 			}
 		})
 		.fail((res, status, error)=>{
