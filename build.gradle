@@ -47,6 +47,10 @@ dependencies {
 	implementation 'org.apache.httpcomponents:httpclient:4.5.13'
 }
 
+bootBuildImage {
+ imageName = "mypt"
+}
+
 /*jar {
     enabled = true
     // 컨트롤러와 HTML 파일을 포함한 jar 파일 생성
