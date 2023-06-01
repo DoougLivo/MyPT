@@ -13,10 +13,10 @@ import com.assignment.choi.domain.HobbyDto;
 import com.assignment.choi.domain.UserDto;
 import com.assignment.choi.domain.UserHDto;
 import com.assignment.choi.domain.UserHDtoPK;
-
+ 
 @Service
 public class PTService {
-	String url = "http://localhost:8082";
+	String url = "http://34.125.113.158:8082";
 	RestTemplate restTemplate = new RestTemplate();
 	
 	public Map<String, Object> goUser() {
